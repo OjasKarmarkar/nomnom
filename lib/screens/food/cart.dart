@@ -155,8 +155,12 @@ class _CartState extends State<Cart> {
                                         fontWeight: FontWeight.bold),
                                   ),
 
-                                  // subtitle: Text(
-                                  //     '${controller.menuItems[index].description}'),
+                                  subtitle: Visibility(
+                                    visible: controller.customizations[index] !=
+                                        null,
+                                    child: Text(
+                                        'Addons : ${controller.customizations[index].toString().replaceAll("[", "").replaceAll("]", "")}'),
+                                  ),
                                   trailing: Container(
                                       width: 36,
                                       height: 36,

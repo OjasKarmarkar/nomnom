@@ -33,6 +33,7 @@ class FoodScreenController extends GetxController {
   RxInt orderAmt = 0.obs;
   String truckId = '';
   String uid = '';
+  Map<int, dynamic> customizations = {};
   RxString selectedCuisine = ''.obs;
   SpeechToText speechToText = SpeechToText();
 

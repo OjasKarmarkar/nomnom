@@ -198,7 +198,9 @@ class FoodTruckDetails extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
-                        fc.selectedCuisine.value.isNotEmpty? fc.selectedCuisine.value : 'Available Items',
+                        fc.selectedCuisine.value.isNotEmpty
+                            ? fc.selectedCuisine.value
+                            : 'Available Items',
                         style: TextStyle(
                             fontWeight: FontWeight.bold, fontSize: 20),
                       ),
@@ -270,15 +272,13 @@ class FoodTruckDetails extends StatelessWidget {
                                                 ? TextButton(
                                                     child: Text('Customize'),
                                                     onPressed: () => Get.to(
-                                                        () => Customization3D(
-                                                            basemodel: fc
-                                                                .menuItems[
-                                                                    index]
-                                                                .name!,
-                                                            ing: fc
-                                                                .menuItems[
-                                                                    index]
-                                                                .customization!)),
+                                                        () => Customization3D(),
+                                                        arguments: {
+                                                          'ix': index,
+                                                          'name': fc
+                                                              .menuItems[index]
+                                                              .name!
+                                                        }),
                                                   )
                                                 : SizedBox(),
                                             fc.menuItems[index].qty > 0
