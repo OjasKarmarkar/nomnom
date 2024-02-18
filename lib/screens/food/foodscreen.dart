@@ -14,9 +14,25 @@ import 'package:nomnom/widgets/focused_layout.dart';
 import 'package:eva_icons_flutter/eva_icons_flutter.dart';
 import 'package:nomnom/widgets/wrapper.dart';
 
-class FoodScreen extends StatelessWidget {
+class FoodScreen extends StatefulWidget {
   FoodScreen({super.key});
+
+  @override
+  State<FoodScreen> createState() => _FoodScreenState();
+}
+
+class _FoodScreenState extends State<FoodScreen> {
   final fc = Get.find<FoodScreenController>();
+
+  late PageController _pageController;
+
+  int activePage = 1;
+
+  List<String> images = [
+    "assets/images/c1.jpg",
+    "assets/images/c2.jpg",
+    "assets/images/c3.jpg",
+  ];
 
   List<String> cuisines = [
     'North Indian',
@@ -35,6 +51,58 @@ class FoodScreen extends StatelessWidget {
     'assets/images/bev.jpg',
     'assets/images/ice.jpg',
   ];
+
+  @override
+  void initState() {
+    _pageController = PageController(viewportFraction: 0.9, initialPage: 1);
+    super.initState();
+  }
+
+  AnimatedContainer slider(images, pagePosition, active) {
+    double margin = active ? 5 : 10;
+
+    return AnimatedContainer(
+      duration: Duration(milliseconds: 500),
+      curve: Curves.easeInOutCubic,
+      margin: EdgeInsets.all(margin),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(20),
+          image: DecorationImage(
+            image: AssetImage(images[pagePosition]))),
+    );
+  }
+
+  imageAnimation(PageController animation, images, pagePosition) {
+    return AnimatedBuilder(
+      animation: animation,
+      builder: (context, widget) {
+        print(pagePosition);
+
+        return SizedBox(
+          width: 200,
+          height: 200,
+          child: widget,
+        );
+      },
+      child: Container(
+        margin: EdgeInsets.all(10),
+        child: Image.network(images[pagePosition]),
+      ),
+    );
+  }
+
+  List<Widget> indicators(imagesLength, currentIndex) {
+    return List<Widget>.generate(imagesLength, (index) {
+      return Container(
+        margin: EdgeInsets.all(3),
+        width: 6,
+        height: 6,
+        decoration: BoxDecoration(
+            color: currentIndex == index ? Colors.black : Colors.black26,
+            shape: BoxShape.circle),
+      );
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -115,6 +183,29 @@ class FoodScreen extends StatelessWidget {
                     },
                   ),
                 ),
+                const SizedBox(
+                  height: 20,
+                ),
+                SizedBox(
+                  width: MediaQuery.of(context).size.width,
+                  height: 200,
+                  child: PageView.builder(
+                      itemCount: images.length,
+                      pageSnapping: true,
+                      controller: _pageController,
+                      onPageChanged: (page) {
+                        setState(() {
+                          activePage = page;
+                        });
+                      },
+                      itemBuilder: (context, pagePosition) {
+                        bool active = pagePosition == activePage;
+                        return slider(images, pagePosition, active);
+                      }),
+                ),
+                Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: indicators(images.length, activePage)),
                 const SizedBox(
                   height: 20,
                 ),

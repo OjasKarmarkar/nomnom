@@ -155,12 +155,12 @@ class _CartState extends State<Cart> {
                                         fontWeight: FontWeight.bold),
                                   ),
 
-                                  subtitle: Visibility(
-                                    visible: controller.customizations[index] !=
-                                        null,
-                                    child: Text(
-                                        'Addons : ${controller.customizations[index].toString().replaceAll("[", "").replaceAll("]", "")}'),
-                                  ),
+                                  subtitle: controller.customizations[index] !=
+                                          null
+                                      ? Text(
+                                          'Addons : ${controller.customizations[index].toString().replaceAll("[", "").replaceAll("]", "")}')
+                                      : null,
+
                                   trailing: Container(
                                       width: 36,
                                       height: 36,

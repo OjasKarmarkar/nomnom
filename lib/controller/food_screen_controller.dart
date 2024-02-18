@@ -141,21 +141,23 @@ class FoodScreenController extends GetxController {
         successCompletion: (CommonResponse c) {
       // debugPrint(c.data.toString());
       //print('hi');
-      if (c.data != null) {
-        //   print(c.data.length);
-        for (int i = 0; i < c.data.length; i++) {
-          menuItems.add(Food.fromJson(c.data[i]));
-        }
-      }
       try {
-        FoodTruck ft = FoodTruck.fromJson(c.truckData);
-        if (ft != null) {
-          truckId = ft.sId ?? '';
-          Get.to(() => FoodTruckDetails(
-                ft: ft,
-              ));
+        if (c.data != null) {
+          //   print(c.data.length);
+          for (int i = 0; i < c.data.length; i++) {
+            print(c.data[i]);
+            menuItems.add(Food.fromJson(c.data[i]));
+          }
         }
+
+        print(c.truckData);
+        FoodTruck ft = FoodTruck.fromJson(c.truckData);
+        truckId = ft.sId ?? '';
+        Get.to(() => FoodTruckDetails(
+              ft: ft,
+            ));
       } catch (e) {
+        print(e.toString());
         Utils.showBottomSnackBar(
             ic: Icon(
               FontAwesomeIcons.triangleExclamation,
