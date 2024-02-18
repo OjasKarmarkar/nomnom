@@ -1,6 +1,9 @@
+import 'dart:io';
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:eva_icons_flutter/eva_icons_flutter.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:nomnom/controller/food_screen_controller.dart';
@@ -12,6 +15,7 @@ import 'package:nomnom/utils/colors.dart';
 import 'package:nomnom/utils/utils.dart';
 import 'package:nomnom/widgets/focused_layout.dart';
 import 'package:nomnom/widgets/wrapper.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart';
 
 class FoodTruckDetails extends StatelessWidget {
@@ -82,9 +86,18 @@ class FoodTruckDetails extends StatelessWidget {
                           ListTile(
                             trailing: IconButton(
                               icon: Icon(EvaIcons.shareOutline),
-                              onPressed: () {
-                                Share.share(
-                                    "Great Food Experience With ${ft.name} at ${ft.city}");
+                              onPressed: () async {
+                                final bytes = await rootBundle
+                                    .load('assets/images/logo.png');
+                                final list = bytes.buffer.asUint8List();
+                                final tempDir = await getTemporaryDirectory();
+                                final file =
+                                    await File('${tempDir.path}/logo.png')
+                                        .create();
+                                file.writeAsBytesSync(list);
+                                Share.shareFiles(['${file.path}'],
+                                    text:
+                                        "Great Food Experience With ${ft.name} at ${ft.city}");
                               },
                             ),
                             title: Text(
@@ -226,183 +239,196 @@ class FoodTruckDetails extends StatelessWidget {
                                 padding: const EdgeInsets.symmetric(
                                     vertical: 10, horizontal: 10),
                                 child: Card(
-                                  child: Row(
-                                    // crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      CircleAvatar(
-                                          radius: 50,
-                                          backgroundImage:
-                                              CachedNetworkImageProvider(
-                                                  '${fc.menuItems[index].img}')),
-                                      const SizedBox(
-                                        width: 20,
-                                      ),
-                                      Expanded(
-                                        child: Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: [
-                                            const SizedBox(
-                                              height: 10,
-                                            ),
-                                            Text(
-                                              "${fc.menuItems[index].name} • ₹ ${fc.menuItems[index].price}",
-                                              softWrap: true,
-                                              maxLines: 2,
-                                              style: const TextStyle(
-                                                  fontSize: 16,
-                                                  fontWeight: FontWeight.bold),
-                                            ),
-                                            const SizedBox(
-                                              height: 6,
-                                            ),
-                                            Text(
-                                              "${fc.menuItems[index].description}",
-                                              softWrap: true,
-                                            ),
-                                            const SizedBox(
-                                              height: 6,
-                                            ),
-                                            (fc.menuItems[index].name!
-                                                            .toLowerCase() ==
-                                                        'pizza' ||
-                                                    fc.menuItems[index].name!
-                                                            .toLowerCase() ==
-                                                        'burger')
-                                                ? TextButton(
-                                                    child: Text('Customize'),
-                                                    onPressed: () => Get.to(
-                                                        () => Customization3D(),
-                                                        arguments: {
-                                                          'ix': index,
-                                                          'name': fc
-                                                              .menuItems[index]
-                                                              .name!
-                                                        }),
-                                                  )
-                                                : SizedBox(),
-                                            fc.menuItems[index].qty > 0
-                                                ? Row(
-                                                    mainAxisAlignment:
-                                                        MainAxisAlignment
-                                                            .center,
-                                                    children: [
-                                                        IconButton(
-                                                          onPressed: () {
-                                                            fc.orderAmt -= (fc
-                                                                    .menuItems[
-                                                                        index]
-                                                                    .price ??
-                                                                0);
-                                                            int q = fc
-                                                                .menuItems[
-                                                                    index]
-                                                                .qty;
-                                                            q -= 1;
-                                                            if (q == 0) {
-                                                              fc.totalItems
-                                                                  .value -= 1;
-                                                            }
-                                                            fc.setFoodItems(
-                                                                fc.menuItems,
-                                                                index,
-                                                                q);
-                                                          },
-                                                          icon: const Icon(
-                                                            Icons.remove,
-                                                            color: Colors.green,
-                                                          ),
-                                                        ),
-                                                        const SizedBox(
-                                                            width: 6),
-                                                        Text(fc.menuItems[index]
-                                                            .qty
-                                                            .toString()),
-                                                        const SizedBox(
-                                                            width: 6),
-                                                        IconButton(
-                                                          onPressed: () {
-                                                            fc.orderAmt += (fc
-                                                                    .menuItems[
-                                                                        index]
-                                                                    .price ??
-                                                                0);
-                                                            int q = fc
-                                                                .menuItems[
-                                                                    index]
-                                                                .qty;
-                                                            q += 1;
-                                                            fc.setFoodItems(
-                                                                fc.menuItems,
-                                                                index,
-                                                                q);
-                                                          },
-                                                          icon: const Icon(
-                                                            Icons.add,
-                                                            color: Colors.green,
-                                                          ),
-                                                        ),
-                                                      ])
-                                                : TextButton(
-                                                    onPressed: () {
-                                                      fc.orderAmt += fc
-                                                              .menuItems[index]
-                                                              .price ??
-                                                          0;
-                                                      int q = fc
-                                                          .menuItems[index].qty;
-                                                      q += 1;
-                                                      fc.totalItems.value += 1;
-                                                      fc.setFoodItems(
-                                                          fc.menuItems,
-                                                          index,
-                                                          q);
-                                                    },
-                                                    style: TextButton.styleFrom(
-                                                        padding:
-                                                            const EdgeInsets.all(
-                                                                0),
-                                                        minimumSize:
-                                                            const Size(110, 35),
-                                                        maximumSize:
-                                                            const Size(110, 35),
-                                                        backgroundColor:
-                                                            AppColors
-                                                                .orangeAccent,
-                                                        foregroundColor:
-                                                            AppColors
-                                                                .whiteColor,
-                                                        textStyle:
-                                                            const TextStyle(
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .bold),
-                                                        //<-- SEE HERE
-                                                        shape: RoundedRectangleBorder(
-                                                            borderRadius:
-                                                                BorderRadius
-                                                                    .circular(
-                                                                        10))),
-                                                    child: const Text(
-                                                      'ADD',
-                                                    ),
-                                                  ),
-                                          ],
+                                  child: Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 4, vertical: 4),
+                                    child: Row(
+                                      // crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        CircleAvatar(
+                                            radius: 50,
+                                            backgroundImage:
+                                                CachedNetworkImageProvider(
+                                                    '${fc.menuItems[index].img}')),
+                                        const SizedBox(
+                                          width: 20,
                                         ),
-                                      ),
-                                      // const Spacer(),
-                                      // Padding(
-                                      //   padding: const EdgeInsets.symmetric(
-                                      //       vertical: 10, horizontal: 10),
-                                      //   child: SvgPicture.asset(
-                                      //     "assets/img/veg-icon.svg",
-                                      //     //theme: SvgTheme(currentColor: AppColors.greenAccent),
-                                      //     color: AppColors.greenAccent,
-                                      //     width: 40,
-                                      //     height: 40,
-                                      //   ),
-                                      // )
-                                    ],
+                                        Expanded(
+                                          child: Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              const SizedBox(
+                                                height: 10,
+                                              ),
+                                              Text(
+                                                "${fc.menuItems[index].name} • ₹ ${fc.menuItems[index].price}",
+                                                softWrap: true,
+                                                maxLines: 2,
+                                                style: const TextStyle(
+                                                    fontSize: 16,
+                                                    fontWeight:
+                                                        FontWeight.bold),
+                                              ),
+                                              const SizedBox(
+                                                height: 6,
+                                              ),
+                                              Text(
+                                                "${fc.menuItems[index].description}",
+                                                softWrap: true,
+                                              ),
+                                              const SizedBox(
+                                                height: 6,
+                                              ),
+                                              (fc.menuItems[index].name!
+                                                              .toLowerCase() ==
+                                                          'pizza' ||
+                                                      fc.menuItems[index].name!
+                                                              .toLowerCase() ==
+                                                          'burger')
+                                                  ? TextButton(
+                                                      child: Text('Customize'),
+                                                      onPressed: () => Get.to(
+                                                          () =>
+                                                              Customization3D(),
+                                                          arguments: {
+                                                            'ix': index,
+                                                            'name': fc
+                                                                .menuItems[
+                                                                    index]
+                                                                .name!
+                                                          }),
+                                                    )
+                                                  : SizedBox(),
+                                              fc.menuItems[index].qty > 0
+                                                  ? Row(
+                                                      mainAxisAlignment:
+                                                          MainAxisAlignment
+                                                              .center,
+                                                      children: [
+                                                          IconButton(
+                                                            onPressed: () {
+                                                              fc.orderAmt -= (fc
+                                                                      .menuItems[
+                                                                          index]
+                                                                      .price ??
+                                                                  0);
+                                                              int q = fc
+                                                                  .menuItems[
+                                                                      index]
+                                                                  .qty;
+                                                              q -= 1;
+                                                              if (q == 0) {
+                                                                fc.totalItems
+                                                                    .value -= 1;
+                                                              }
+                                                              fc.setFoodItems(
+                                                                  fc.menuItems,
+                                                                  index,
+                                                                  q);
+                                                            },
+                                                            icon: const Icon(
+                                                              Icons.remove,
+                                                              color:
+                                                                  Colors.green,
+                                                            ),
+                                                          ),
+                                                          const SizedBox(
+                                                              width: 6),
+                                                          Text(fc
+                                                              .menuItems[index]
+                                                              .qty
+                                                              .toString()),
+                                                          const SizedBox(
+                                                              width: 6),
+                                                          IconButton(
+                                                            onPressed: () {
+                                                              fc.orderAmt += (fc
+                                                                      .menuItems[
+                                                                          index]
+                                                                      .price ??
+                                                                  0);
+                                                              int q = fc
+                                                                  .menuItems[
+                                                                      index]
+                                                                  .qty;
+                                                              q += 1;
+                                                              fc.setFoodItems(
+                                                                  fc.menuItems,
+                                                                  index,
+                                                                  q);
+                                                            },
+                                                            icon: const Icon(
+                                                              Icons.add,
+                                                              color:
+                                                                  Colors.green,
+                                                            ),
+                                                          ),
+                                                        ])
+                                                  : TextButton(
+                                                      onPressed: () {
+                                                        fc.orderAmt +=
+                                                            fc.menuItems[index]
+                                                                    .price ??
+                                                                0;
+                                                        int q = fc
+                                                            .menuItems[index]
+                                                            .qty;
+                                                        q += 1;
+                                                        fc.totalItems.value +=
+                                                            1;
+                                                        fc.setFoodItems(
+                                                            fc.menuItems,
+                                                            index,
+                                                            q);
+                                                      },
+                                                      style:
+                                                          TextButton.styleFrom(
+                                                              padding:
+                                                                  const EdgeInsets
+                                                                      .all(0),
+                                                              minimumSize:
+                                                                  const Size(
+                                                                      110, 35),
+                                                              maximumSize:
+                                                                  const Size(
+                                                                      110, 35),
+                                                              backgroundColor:
+                                                                  AppColors
+                                                                      .orangeAccent,
+                                                              foregroundColor:
+                                                                  AppColors
+                                                                      .whiteColor,
+                                                              textStyle: const TextStyle(
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .bold),
+                                                              //<-- SEE HERE
+                                                              shape: RoundedRectangleBorder(
+                                                                  borderRadius:
+                                                                      BorderRadius.circular(
+                                                                          10))),
+                                                      child: const Text(
+                                                        'ADD',
+                                                      ),
+                                                    ),
+                                            ],
+                                          ),
+                                        ),
+                                        // const Spacer(),
+                                        // Padding(
+                                        //   padding: const EdgeInsets.symmetric(
+                                        //       vertical: 10, horizontal: 10),
+                                        //   child: SvgPicture.asset(
+                                        //     "assets/img/veg-icon.svg",
+                                        //     //theme: SvgTheme(currentColor: AppColors.greenAccent),
+                                        //     color: AppColors.greenAccent,
+                                        //     width: 40,
+                                        //     height: 40,
+                                        //   ),
+                                        // )
+                                      ],
+                                    ),
                                   ),
                                 ),
                               );

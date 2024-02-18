@@ -1,5 +1,3 @@
-
-
 import 'package:nomnom/utils/networking.dart';
 
 import '../models/common_res.dart';
@@ -7,11 +5,10 @@ import '../models/common_res.dart';
 class DataSource {
   static DataSource instance = DataSource();
 
-  static String loginAPI =
-      "user/login";
+  static String loginAPI = "user/login";
   static String nearestTrucksAPI = 'admin/getNearbyTrucks';
-    static String menuItemsAPI = 'menu/getMenuByTruck';
-        static String cuisineItemsAPI = 'admin/getNearestTruck';
+  static String menuItemsAPI = 'menu/getMenuByTruck';
+  static String cuisineItemsAPI = 'admin/getNearestTruck';
 
   static String calendarEventAPI = 'https://graph.microsoft.com/v1.0/me/events';
   static String allMeetingsAPI = 'meet/myMeet';
@@ -19,7 +16,11 @@ class DataSource {
   static String foodMenuAPI = 'pantry/getitems';
   static String orderHistoryAPI = 'order/getOrderByUser';
   static String createOrderAPI = 'order/addOrder';
+  static String addReviewAPI = 'review/addReview';
+    static String getReviewsAPI = 'review/getReviewByUser';
   static String bookMeetingAPI = 'meet/book';
+    static String searchAPI = 'menu/getFoodByName';
+
   static String cancelMeetingAPI = 'meet/del';
   static String checkInAPI = 'meet/checkin';
   static String updateMeetingAPI = 'meet/update';
@@ -34,35 +35,43 @@ class DataSource {
       {required void Function(CommonResponse) successCompletion,
       required void Function(CommonResponse) errCompletion}) {
     return BaseNetwork.post(
-        loginAPI, body, successCompletion, errCompletion , false,null);
+        loginAPI, body, successCompletion, errCompletion, false, null);
   }
 
-  static Future<CommonResponse> getNearestTrucks(double lat , double lng , String token,
+  static Future<CommonResponse> getNearestTrucks(
+      double lat, double lng, String token,
       {required void Function(CommonResponse) successCompletion,
       required void Function(CommonResponse) errCompletion}) {
     return BaseNetwork.get(
-        nearestTrucksAPI + '?latitude=${lat}&longitude=${lng}', token, successCompletion, errCompletion);
+        nearestTrucksAPI + '?latitude=${lat}&longitude=${lng}',
+        token,
+        successCompletion,
+        errCompletion);
   }
 
-  static Future<CommonResponse> getMenu(String id , String token,
+  static Future<CommonResponse> getMenu(String id, String token,
       {required void Function(CommonResponse) successCompletion,
       required void Function(CommonResponse) errCompletion}) {
     return BaseNetwork.get(
         menuItemsAPI + '?id=${id}', token, successCompletion, errCompletion);
   }
 
-    static Future<CommonResponse> getCuisine(String lat , String lng , String c , String token,
+  static Future<CommonResponse> getCuisine(
+      String lat, String lng, String c, String token,
       {required void Function(CommonResponse) successCompletion,
       required void Function(CommonResponse) errCompletion}) {
     return BaseNetwork.get(
-        cuisineItemsAPI + '?latitude=${lat}&longitude=${lng}&cuisine=${c}', token, successCompletion, errCompletion);
+        cuisineItemsAPI + '?latitude=${lat}&longitude=${lng}&cuisine=${c}',
+        token,
+        successCompletion,
+        errCompletion);
   }
 
   static Future<CommonResponse> getMyOrders(String id, String token,
       {required void Function(CommonResponse) successCompletion,
       required void Function(CommonResponse) errCompletion}) {
-    return BaseNetwork.get(
-        orderHistoryAPI + '?userId=${id}', token, successCompletion, errCompletion);
+    return BaseNetwork.get(orderHistoryAPI + '?userId=${id}', token,
+        successCompletion, errCompletion);
   }
 
   static Future<CommonResponse> getFoodMenu(dynamic body,
@@ -70,6 +79,27 @@ class DataSource {
       required void Function(CommonResponse) errCompletion}) {
     return BaseNetwork.post(
         foodMenuAPI, body, successCompletion, errCompletion, false, userToken);
+  }
+
+    static Future<CommonResponse> addReview(dynamic body, String token , 
+      {required void Function(CommonResponse) successCompletion,
+      required void Function(CommonResponse) errCompletion}) {
+    return BaseNetwork.post(
+        addReviewAPI, body, successCompletion, errCompletion, false, token);
+  }
+
+    static Future<CommonResponse> getReviews(String id, String token,
+      {required void Function(CommonResponse) successCompletion,
+      required void Function(CommonResponse) errCompletion}) {
+    return BaseNetwork.get(getReviewsAPI + '?userId=${id}', token,
+        successCompletion, errCompletion);
+  }
+
+  static Future<CommonResponse> search(String name, String token,
+      {required void Function(CommonResponse) successCompletion,
+      required void Function(CommonResponse) errCompletion}) {
+    return BaseNetwork.get(searchAPI + '?name=${name}', token,
+        successCompletion, errCompletion);
   }
 
   static Future<CommonResponse> getFilterRooms(dynamic body,
@@ -122,7 +152,7 @@ class DataSource {
         checkInAPI, body, successCompletion, errCompletion, false, userToken);
   }
 
-    static Future<CommonResponse> createOrder(dynamic body, String token,
+  static Future<CommonResponse> createOrder(dynamic body, String token,
       {required void Function(CommonResponse) successCompletion,
       required void Function(CommonResponse) errCompletion}) {
     return BaseNetwork.post(

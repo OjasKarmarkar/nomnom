@@ -7,6 +7,7 @@ import 'package:nomnom/controller/food_screen_controller.dart';
 import 'package:nomnom/screens/auth/onboarding.dart';
 import 'package:nomnom/screens/food/detailscreen.dart';
 import 'package:nomnom/screens/history.dart';
+import 'package:nomnom/screens/search.dart';
 import 'package:nomnom/utils/colors.dart';
 import 'package:nomnom/utils/shared_prefs.dart';
 import 'package:nomnom/widgets/focused_layout.dart';
@@ -106,8 +107,11 @@ class FoodScreen extends StatelessWidget {
                             borderRadius: BorderRadius.circular(10))
                         //primary: Colors.teal,
                         ),
-                    onPressed: () {
-                      print('Pressed');
+                    onPressed: () async {
+                      await showSearch(
+                        context: context,
+                        delegate: CustomSearchDelegate(),
+                      );
                     },
                   ),
                 ),
@@ -130,7 +134,7 @@ class FoodScreen extends StatelessWidget {
                     itemBuilder: (context, index) => InkWell(
                       onTap: () {
                         fc.getCuisineItems(cuisines[index]);
-                       // Get.to(() => Cuisines());
+                        // Get.to(() => Cuisines());
                       },
                       child: Column(
                         children: [
