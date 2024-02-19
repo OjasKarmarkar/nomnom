@@ -77,29 +77,35 @@ class OrderHistory extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         ListTile(
-                          contentPadding:
-                              const EdgeInsets.symmetric(horizontal: 20),
-                          dense: true,
-                          isThreeLine: false,
-                          title: Text(
-                            "${controller.myOrders[index].adminId}",
-                            softWrap: true,
-                            style: TextStyle(
-                                fontSize: 18, fontWeight: FontWeight.bold),
-                          ),
-                          subtitle: Text(
-                            "₹ ${controller.myOrders[index].amount}",
-                            textAlign: TextAlign.left,
-                            softWrap: true,
-                            style: const TextStyle(
-                                fontSize: 16, color: AppColors.greyColor),
-                          ),
-                          trailing: const Icon(
-                            FontAwesomeIcons.circleCheck,
-                            size: 24,
-                            color: AppColors.greenAccent,
-                          ),
-                        ),
+                            contentPadding:
+                                const EdgeInsets.symmetric(horizontal: 20),
+                            dense: true,
+                            isThreeLine: false,
+                            title: Text(
+                              "${controller.myOrders[index].adminId}",
+                              softWrap: true,
+                              style: TextStyle(
+                                  fontSize: 18, fontWeight: FontWeight.bold),
+                            ),
+                            subtitle: Text(
+                              "₹ ${controller.myOrders[index].amount}",
+                              textAlign: TextAlign.left,
+                              softWrap: true,
+                              style: const TextStyle(
+                                  fontSize: 16, color: AppColors.greyColor),
+                            ),
+                            trailing: controller.myOrders[index].orderStatus ==
+                                    'picked'
+                                ? const Icon(
+                                    FontAwesomeIcons.circleCheck,
+                                    size: 24,
+                                    color: AppColors.greenAccent,
+                                  )
+                                : const Icon(
+                                    EvaIcons.clockOutline,
+                                    size: 24,
+                                    color: Colors.amber,
+                                  )),
                         Row(
                           children: List.generate(
                               170 ~/ 10,

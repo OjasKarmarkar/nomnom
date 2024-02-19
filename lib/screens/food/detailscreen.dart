@@ -235,199 +235,267 @@ class FoodTruckDetails extends StatelessWidget {
                             physics: NeverScrollableScrollPhysics(),
                             itemCount: fc.menuItems.length,
                             itemBuilder: (context, index) {
-                              return Padding(
-                                padding: const EdgeInsets.symmetric(
-                                    vertical: 10, horizontal: 10),
-                                child: Card(
-                                  child: Padding(
-                                    padding: const EdgeInsets.symmetric(
-                                        horizontal: 4, vertical: 4),
-                                    child: Row(
-                                      // crossAxisAlignment: CrossAxisAlignment.start,
-                                      children: [
-                                        CircleAvatar(
-                                            radius: 50,
-                                            backgroundImage:
-                                                CachedNetworkImageProvider(
-                                                    '${fc.menuItems[index].img}')),
-                                        const SizedBox(
-                                          width: 20,
-                                        ),
-                                        Expanded(
-                                          child: Column(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            children: [
-                                              const SizedBox(
-                                                height: 10,
-                                              ),
-                                              Text(
-                                                "${fc.menuItems[index].name} • ₹ ${fc.menuItems[index].price}",
-                                                softWrap: true,
-                                                maxLines: 2,
-                                                style: const TextStyle(
-                                                    fontSize: 16,
-                                                    fontWeight:
-                                                        FontWeight.bold),
-                                              ),
-                                              const SizedBox(
-                                                height: 6,
-                                              ),
-                                              Text(
-                                                "${fc.menuItems[index].description}",
-                                                softWrap: true,
-                                              ),
-                                              const SizedBox(
-                                                height: 6,
-                                              ),
-                                              (fc.menuItems[index].name!
-                                                              .toLowerCase() ==
-                                                          'pizza' ||
-                                                      fc.menuItems[index].name!
-                                                              .toLowerCase() ==
-                                                          'burger')
-                                                  ? TextButton(
-                                                      child: Text('Customize'),
-                                                      onPressed: () => Get.to(
-                                                          () =>
-                                                              Customization3D(),
-                                                          arguments: {
-                                                            'ix': index,
-                                                            'name': fc
+                              return Visibility(
+                                visible: fc.menuItems[index].complete ?? true,
+                                child: Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                      vertical: 10, horizontal: 10),
+                                  child: Card(
+                                    child: Padding(
+                                      padding: const EdgeInsets.symmetric(
+                                          horizontal: 4, vertical: 4),
+                                      child: Row(
+                                        // crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          CircleAvatar(
+                                              radius: 50,
+                                              backgroundImage:
+                                                  CachedNetworkImageProvider(
+                                                      '${fc.menuItems[index].img}')),
+                                          const SizedBox(
+                                            width: 20,
+                                          ),
+                                          Expanded(
+                                            child: Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              children: [
+                                                const SizedBox(
+                                                  height: 10,
+                                                ),
+                                                Text(
+                                                  "${fc.menuItems[index].name} • ₹ ${fc.menuItems[index].price}",
+                                                  softWrap: true,
+                                                  maxLines: 2,
+                                                  style: const TextStyle(
+                                                      fontSize: 16,
+                                                      fontWeight:
+                                                          FontWeight.bold),
+                                                ),
+                                                const SizedBox(
+                                                  height: 6,
+                                                ),
+                                                Text(
+                                                  "${fc.menuItems[index].description}",
+                                                  softWrap: true,
+                                                ),
+                                                const SizedBox(
+                                                  height: 6,
+                                                ),
+                                                (fc.menuItems[index].name!
+                                                            .toLowerCase() ==
+                                                        'burger')
+                                                    ? TextButton(
+                                                        child:
+                                                            Text('Customize'),
+                                                        onPressed: () => Get.to(
+                                                            () =>
+                                                                Customization3D(),
+                                                            arguments: {
+                                                              'ix': index,
+                                                              'name': fc
+                                                                  .menuItems[
+                                                                      index]
+                                                                  .name!
+                                                            }),
+                                                      )
+                                                    : SizedBox(),
+                                                fc.menuItems[index].qty > 0
+                                                    ? Row(
+                                                        mainAxisAlignment:
+                                                            MainAxisAlignment
+                                                                .center,
+                                                        children: [
+                                                            IconButton(
+                                                              onPressed: () {
+                                                                fc.orderAmt -= (fc
+                                                                        .menuItems[
+                                                                            index]
+                                                                        .price ??
+                                                                    0);
+
+                                                                if (fc.customizations[
+                                                                        index] !=
+                                                                    null) {
+                                                                  String s =
+                                                                      fc.customizations[
+                                                                          index];
+                                                                  if (s.contains(
+                                                                      'tomato')) {
+                                                                    fc.orderAmt -=
+                                                                        50;
+                                                                  }
+                                                                  if (s.contains(
+                                                                      'salad')) {
+                                                                    fc.orderAmt -=
+                                                                        50;
+                                                                  }
+                                                                  if (s.contains(
+                                                                      'cheese')) {
+                                                                    fc.orderAmt -=
+                                                                        50;
+                                                                  }
+                                                                }
+
+                                                                int q = fc
+                                                                    .menuItems[
+                                                                        index]
+                                                                    .qty;
+                                                                q -= 1;
+                                                                if (q == 0) {
+                                                                  fc.totalItems
+                                                                      .value -= 1;
+                                                                }
+                                                                fc.setFoodItems(
+                                                                    fc.menuItems,
+                                                                    index,
+                                                                    q);
+                                                              },
+                                                              icon: const Icon(
+                                                                Icons.remove,
+                                                                color: Colors
+                                                                    .green,
+                                                              ),
+                                                            ),
+                                                            const SizedBox(
+                                                                width: 6),
+                                                            Text(fc
                                                                 .menuItems[
                                                                     index]
-                                                                .name!
-                                                          }),
-                                                    )
-                                                  : SizedBox(),
-                                              fc.menuItems[index].qty > 0
-                                                  ? Row(
-                                                      mainAxisAlignment:
-                                                          MainAxisAlignment
-                                                              .center,
-                                                      children: [
-                                                          IconButton(
-                                                            onPressed: () {
-                                                              fc.orderAmt -= (fc
-                                                                      .menuItems[
-                                                                          index]
-                                                                      .price ??
-                                                                  0);
-                                                              int q = fc
+                                                                .qty
+                                                                .toString()),
+                                                            const SizedBox(
+                                                                width: 6),
+                                                            IconButton(
+                                                              onPressed: () {
+                                                                fc.orderAmt += (fc
+                                                                        .menuItems[
+                                                                            index]
+                                                                        .price ??
+                                                                    0);
+                                                                if (fc.customizations[
+                                                                        index] !=
+                                                                    null) {
+                                                                  String s =
+                                                                      fc.customizations[
+                                                                          index];
+                                                                  if (s.contains(
+                                                                      'tomato')) {
+                                                                    fc.orderAmt +=
+                                                                        50;
+                                                                  }
+                                                                  if (s.contains(
+                                                                      'salad')) {
+                                                                    fc.orderAmt +=
+                                                                        50;
+                                                                  }
+                                                                  if (s.contains(
+                                                                      'cheese')) {
+                                                                    fc.orderAmt +=
+                                                                        50;
+                                                                  }
+                                                                }
+                                                                int q = fc
+                                                                    .menuItems[
+                                                                        index]
+                                                                    .qty;
+                                                                q += 1;
+                                                                fc.setFoodItems(
+                                                                    fc.menuItems,
+                                                                    index,
+                                                                    q);
+                                                              },
+                                                              icon: const Icon(
+                                                                Icons.add,
+                                                                color: Colors
+                                                                    .green,
+                                                              ),
+                                                            ),
+                                                          ])
+                                                    : TextButton(
+                                                        onPressed: () {
+                                                          fc.orderAmt += fc
                                                                   .menuItems[
                                                                       index]
-                                                                  .qty;
-                                                              q -= 1;
-                                                              if (q == 0) {
-                                                                fc.totalItems
-                                                                    .value -= 1;
-                                                              }
-                                                              fc.setFoodItems(
-                                                                  fc.menuItems,
-                                                                  index,
-                                                                  q);
-                                                            },
-                                                            icon: const Icon(
-                                                              Icons.remove,
-                                                              color:
-                                                                  Colors.green,
-                                                            ),
-                                                          ),
-                                                          const SizedBox(
-                                                              width: 6),
-                                                          Text(fc
+                                                                  .price ??
+                                                              0;
+                                                          if (fc.customizations[
+                                                                  index] !=
+                                                              null) {
+                                                            String s =
+                                                                fc.customizations[
+                                                                    index];
+                                                            if (s.contains(
+                                                                'tomato')) {
+                                                              fc.orderAmt += 50;
+                                                            }
+                                                            if (s.contains(
+                                                                'salad')) {
+                                                              fc.orderAmt += 50;
+                                                            }
+                                                            if (s.contains(
+                                                                'cheese')) {
+                                                              fc.orderAmt += 50;
+                                                            }
+                                                          }
+                                                          int q = fc
                                                               .menuItems[index]
-                                                              .qty
-                                                              .toString()),
-                                                          const SizedBox(
-                                                              width: 6),
-                                                          IconButton(
-                                                            onPressed: () {
-                                                              fc.orderAmt += (fc
-                                                                      .menuItems[
-                                                                          index]
-                                                                      .price ??
-                                                                  0);
-                                                              int q = fc
-                                                                  .menuItems[
-                                                                      index]
-                                                                  .qty;
-                                                              q += 1;
-                                                              fc.setFoodItems(
-                                                                  fc.menuItems,
-                                                                  index,
-                                                                  q);
-                                                            },
-                                                            icon: const Icon(
-                                                              Icons.add,
-                                                              color:
-                                                                  Colors.green,
-                                                            ),
-                                                          ),
-                                                        ])
-                                                  : TextButton(
-                                                      onPressed: () {
-                                                        fc.orderAmt +=
-                                                            fc.menuItems[index]
-                                                                    .price ??
-                                                                0;
-                                                        int q = fc
-                                                            .menuItems[index]
-                                                            .qty;
-                                                        q += 1;
-                                                        fc.totalItems.value +=
-                                                            1;
-                                                        fc.setFoodItems(
-                                                            fc.menuItems,
-                                                            index,
-                                                            q);
-                                                      },
-                                                      style:
-                                                          TextButton.styleFrom(
-                                                              padding:
-                                                                  const EdgeInsets
-                                                                      .all(0),
-                                                              minimumSize:
-                                                                  const Size(
-                                                                      110, 35),
-                                                              maximumSize:
-                                                                  const Size(
-                                                                      110, 35),
-                                                              backgroundColor:
-                                                                  AppColors
-                                                                      .orangeAccent,
-                                                              foregroundColor:
-                                                                  AppColors
-                                                                      .whiteColor,
-                                                              textStyle: const TextStyle(
-                                                                  fontWeight:
-                                                                      FontWeight
-                                                                          .bold),
-                                                              //<-- SEE HERE
-                                                              shape: RoundedRectangleBorder(
-                                                                  borderRadius:
-                                                                      BorderRadius.circular(
-                                                                          10))),
-                                                      child: const Text(
-                                                        'ADD',
+                                                              .qty;
+                                                          q += 1;
+                                                          fc.totalItems.value +=
+                                                              1;
+                                                          fc.setFoodItems(
+                                                              fc.menuItems,
+                                                              index,
+                                                              q);
+                                                        },
+                                                        style: TextButton
+                                                            .styleFrom(
+                                                                padding:
+                                                                    const EdgeInsets.all(
+                                                                        0),
+                                                                minimumSize:
+                                                                    const Size(
+                                                                        110, 35),
+                                                                maximumSize:
+                                                                    const Size(
+                                                                        110,
+                                                                        35),
+                                                                backgroundColor:
+                                                                    AppColors
+                                                                        .orangeAccent,
+                                                                foregroundColor:
+                                                                    AppColors
+                                                                        .whiteColor,
+                                                                textStyle: const TextStyle(
+                                                                    fontWeight:
+                                                                        FontWeight
+                                                                            .bold),
+                                                                //<-- SEE HERE
+                                                                shape: RoundedRectangleBorder(
+                                                                    borderRadius:
+                                                                        BorderRadius.circular(10))),
+                                                        child: const Text(
+                                                          'ADD',
+                                                        ),
                                                       ),
-                                                    ),
-                                            ],
+                                              ],
+                                            ),
                                           ),
-                                        ),
-                                        // const Spacer(),
-                                        // Padding(
-                                        //   padding: const EdgeInsets.symmetric(
-                                        //       vertical: 10, horizontal: 10),
-                                        //   child: SvgPicture.asset(
-                                        //     "assets/img/veg-icon.svg",
-                                        //     //theme: SvgTheme(currentColor: AppColors.greenAccent),
-                                        //     color: AppColors.greenAccent,
-                                        //     width: 40,
-                                        //     height: 40,
-                                        //   ),
-                                        // )
-                                      ],
+                                          // const Spacer(),
+                                          // Padding(
+                                          //   padding: const EdgeInsets.symmetric(
+                                          //       vertical: 10, horizontal: 10),
+                                          //   child: SvgPicture.asset(
+                                          //     "assets/img/veg-icon.svg",
+                                          //     //theme: SvgTheme(currentColor: AppColors.greenAccent),
+                                          //     color: AppColors.greenAccent,
+                                          //     width: 40,
+                                          //     height: 40,
+                                          //   ),
+                                          // )
+                                        ],
+                                      ),
                                     ),
                                   ),
                                 ),

@@ -76,8 +76,7 @@ class _Customization3DState extends State<Customization3D> {
           return NavigationDecision.navigate;
         }, onUrlChange: (UrlChange change) async {
           Uri uri = Uri.parse(change.url!);
-          fc.customizations[ix] =
-              uri.queryParameters['customizations'];
+          fc.customizations[ix] = uri.queryParameters['customizations'];
           print(fc.customizations[ix]);
         }),
       )

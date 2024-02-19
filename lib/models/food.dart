@@ -3,6 +3,7 @@ class Food {
   String? truckId;
   String? cuisine;
   String? name;
+  bool? complete;
   int? price;
   int? veg;
   String? img;
@@ -23,7 +24,8 @@ class Food {
       customization,
       description,
       iV,
-      avail ,qty=0});
+      avail,
+      qty = 0});
 
   Food.fromJson(Map<String, dynamic> json) {
     sId = json['_id'];
@@ -33,6 +35,7 @@ class Food {
     price = json['price'];
     veg = json['veg'];
     img = json['img'];
+    complete = json['complete'] ?? true;
     customization = json['customization'] != null
         ? Customization.fromJson(json['customization'])
         : null;

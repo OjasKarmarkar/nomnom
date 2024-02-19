@@ -54,7 +54,7 @@ class _FoodScreenState extends State<FoodScreen> {
 
   @override
   void initState() {
-    _pageController = PageController(viewportFraction: 0.9, initialPage: 1);
+    _pageController = PageController(viewportFraction: 0.9, initialPage: 0);
     super.initState();
   }
 
@@ -66,9 +66,8 @@ class _FoodScreenState extends State<FoodScreen> {
       curve: Curves.easeInOutCubic,
       margin: EdgeInsets.all(margin),
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(20),
-          image: DecorationImage(
-            image: AssetImage(images[pagePosition]))),
+          borderRadius: BorderRadius.circular(20),
+          image: DecorationImage(image: AssetImage(images[pagePosition]))),
     );
   }
 
